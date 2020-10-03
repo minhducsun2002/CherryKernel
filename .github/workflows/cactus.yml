@@ -1,10 +1,6 @@
 name: Build Cherry Kernel for cactus
 
-on:
-  push:
-    paths:
-    - 'cactus.trigger'
-
+on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest

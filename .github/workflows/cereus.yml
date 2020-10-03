@@ -1,10 +1,6 @@
 name: Build Cherry Kernel for cereus
 
-on:
-  push:
-    paths:
-    - 'cereus.trigger'
-
+on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
