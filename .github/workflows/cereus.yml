@@ -17,10 +17,10 @@ jobs:
         rm gcc-linaro-7.5.0-2019.12-x86_64_arm-linux-gnueabihf.tar.xz
         ARCH=arm make O=out cereus_defconfig
         ARCH=arm CROSS_COMPILE=$(pwd)/gcc/bin/arm-linux-gnueabihf- make O=out -j$(nproc --all)
-        git clone https://github.com/osm0sis/AnyKernel3 ak3 --depth 1 --single-branch
+        git clone https://github.com/minhducsun2002/AnyKernel3-cereus ak3 --depth 1 --single-branch -b cereus
         cp out/arch/arm/boot/zImage-dtb ak3
         cd ak3
-        zip -r9 CherryKernel-Ionized-cereus.zip *
+        zip -r9 CherryKernel-Ionized-cereus.zip * -x .git README.md *placeholder
         cp CherryKernel-Ionized-cereus.zip ../
     - uses: actions/upload-artifact@v1
       with:
