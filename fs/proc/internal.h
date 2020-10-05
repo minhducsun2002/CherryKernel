@@ -169,6 +169,8 @@ extern int pid_delete_dentry(const struct dentry *);
 extern int proc_pid_readdir(struct file *, struct dir_context *);
 extern struct dentry *proc_pid_lookup(struct inode *, struct dentry *, unsigned int);
 extern loff_t mem_lseek(struct file *, loff_t, int);
+extern unsigned long uclamp_tg_min(struct task_struct *task);
+extern unsigned long uclamp_ts_min(struct task_struct *task);
 
 /* Lookups */
 typedef int instantiate_t(struct inode *, struct dentry *,
@@ -256,6 +258,15 @@ extern void proc_sys_evict_inode(struct inode *inode,
 static inline void proc_sys_init(void) { }
 static inline void proc_sys_evict_inode(struct  inode *inode,
 					struct ctl_table_header *head) { }
+#endif
+
+/*
+ * uid.c
+ */
+#ifdef CONFIG_PROC_UID
+extern int proc_uid_init(void);
+#else
+static inline void proc_uid_init(void) { }
 #endif
 
 /*

@@ -18,6 +18,7 @@
 #include <linux/dirent.h>
 #include <linux/syscalls.h>
 #include <linux/utime.h>
+#include <linux/initramfs.h>
 #include <linux/file.h>
 
 static ssize_t __init xwrite(int fd, const char *p, size_t count)
@@ -606,9 +607,23 @@ static void __init clean_rootfs(void)
 }
 #endif
 
+static int __initdata do_skip_initramfs;
+
+static int __init skip_initramfs_param(char *str)
+{
+	if (*str)
+		return 0;
+	do_skip_initramfs = 1;
+	return 1;
+}
+__setup("skip_initramfs", skip_initramfs_param);
+
 static int __init populate_rootfs(void)
 {
-	char *err = unpack_to_rootfs(__initramfs_start, __initramfs_size);
+	char *err;
+	bool skip_ramdisk;
+
+	err = unpack_to_rootfs(__initramfs_start, __initramfs_size);
 	if (err)
 		panic("%s", err); /* Failed to decompress INTERNAL initramfs */
 	if (initrd_start) {
@@ -619,6 +634,7 @@ static int __init populate_rootfs(void)
 			initrd_end - initrd_start);
 		if (!err) {
 			free_initrd();
+			skip_ramdisk = true;
 			goto done;
 		} else {
 			clean_rootfs();
@@ -644,8 +660,10 @@ static int __init populate_rootfs(void)
 		printk(KERN_INFO "Unpacking initramfs...\n");
 		err = unpack_to_rootfs((char *)initrd_start,
 			initrd_end - initrd_start);
-		if (err)
+		if (err) {
 			printk(KERN_EMERG "Initramfs unpacking failed: %s\n", err);
+			skip_ramdisk = true;
+		}
 		free_initrd();
 #endif
 		flush_delayed_fput();
@@ -655,6 +673,6 @@ static int __init populate_rootfs(void)
 		 */
 		load_default_modules();
 	}
-	return 0;
+	return skip_ramdisk ? default_rootfs() : 0;
 }
 rootfs_initcall(populate_rootfs);
