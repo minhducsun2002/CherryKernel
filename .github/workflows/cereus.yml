@@ -24,5 +24,5 @@ jobs:
         cp CherryKernel-Ionized-cereus.zip ../
     - uses: actions/upload-artifact@v1
       with:
-        name: CherryKernel-Ionized-cereus
+        name: CherryKernel-Ionized-cereus-${{ github.sha }}
         path: CherryKernel-Ionized-cereus.zip
