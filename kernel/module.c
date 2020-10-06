@@ -1283,6 +1283,8 @@ static int check_version(Elf_Shdr *sechdrs,
 		return 1;
 
 	/* No versions at all?  modprobe --force does this. */
+	versindex = 0;
+	/* Force bypassing version magic check */
 	if (versindex == 0)
 		return try_to_force_load(mod, symname) == 0;
 
