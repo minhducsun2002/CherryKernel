@@ -1,0 +1,31 @@
+name: Build GPS driver for cereus
+
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build
+      run: |
+        wget -q https://releases.linaro.org/components/toolchain/binaries/7.5-2019.12/arm-linux-gnueabihf/gcc-linaro-7.5.0-2019.12-x86_64_arm-linux-gnueabihf.tar.xz
+        tar -xJf gcc-linaro-7.5.0-2019.12-x86_64_arm-linux-gnueabihf.tar.xz
+        mv gcc-linaro-7.5.0-2019.12-x86_64_arm-linux-gnueabihf gcc
+        rm gcc-linaro-7.5.0-2019.12-x86_64_arm-linux-gnueabihf.tar.xz
+        export ARCH=arm
+        export CROSS_COMPILE=$(pwd)/gcc/bin/arm-linux-gnueabihf-
+        make O=out cereus_defconfig
+        make O=out modules_prepare
+        make O=out modules -j$(echo "$(nproc --all)*2" | bc)
+        export TOP=$(pwd)/external
+        mkdir -p external/vendor/mediatek/kernel_modules
+        cd external/vendor/mediatek/kernel_modules
+        git clone https://github.com/junkyard-2327/t-alps-release-p0.mp1-V5.237_kernel-modules .
+        cd connectivity/gps
+        make -C $GITHUB_WORKSPACE O=out M=$PWD AUTOCONF_H=$GITHUB_WORKSPACE/out/include/generated/autoconf.h TOP=$TOP
+    - uses: actions/upload-artifact@v1
+      with:
+        name: CherryKernel-cereus-gps_drv-${{ github.sha }}
+        path: external/vendor/mediatek/kernel_modules/connectivity/gps/gps_drv.ko
