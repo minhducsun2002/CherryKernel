@@ -30,6 +30,9 @@ jobs:
         cd ../common
         make -C $GITHUB_WORKSPACE O=out M=$PWD AUTOCONF_H=$GITHUB_WORKSPACE/out/include/generated/autoconf.h TOP=$TOP
 
+        cd ../../fpsgo_cus/4.9
+        make -C $GITHUB_WORKSPACE O=out M=$PWD
+
         cd ..
         mkdir /tmp/modules
         cp **/*.ko /tmp/modules
