@@ -20,20 +20,27 @@ jobs:
         make O=out modules_prepare
         make O=out modules -j$(echo "$(nproc --all)*2" | bc)
         export TOP=$(pwd)/external
+        export BASEPATH=$(pwd)/external/vendor/mediatek/kernel_modules
         mkdir -p external/vendor/mediatek/kernel_modules
         cd external/vendor/mediatek/kernel_modules
         git clone https://github.com/junkyard-2327/t-alps-release-p0.mp1-V5.237_kernel-modules .
 
-        cd connectivity/gps
+        cd $BASEPATH/connectivity/gps
         make -C $GITHUB_WORKSPACE O=out M=$PWD AUTOCONF_H=$GITHUB_WORKSPACE/out/include/generated/autoconf.h TOP=$TOP
 
-        cd ../common
+        cd $BASEPATH/connectivity/bt/mt66xx
         make -C $GITHUB_WORKSPACE O=out M=$PWD AUTOCONF_H=$GITHUB_WORKSPACE/out/include/generated/autoconf.h TOP=$TOP
 
-        cd ../../fpsgo_cus/4.9
+        cd $BASEPATH/connectivity/common
+        make -C $GITHUB_WORKSPACE O=out M=$PWD AUTOCONF_H=$GITHUB_WORKSPACE/out/include/generated/autoconf.h TOP=$TOP
+
+        cd $BASEPATH/connectivity/fmradio
+        make -C $GITHUB_WORKSPACE O=out M=$PWD AUTOCONF_H=$GITHUB_WORKSPACE/out/include/generated/autoconf.h TOP=$TOP
+
+        cd $BASEPATH/fpsgo_cus/4.9
         make -C $GITHUB_WORKSPACE O=out M=$PWD
 
-        cd ..
+        cd $BASEPATH/connectivity
         mkdir /tmp/modules
         cp **/*.ko /tmp/modules
     - uses: actions/upload-artifact@v1
