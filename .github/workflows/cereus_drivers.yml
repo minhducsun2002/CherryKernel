@@ -47,6 +47,9 @@ jobs:
         export MTK_ANDROID_WMT=y
         make -C $GITHUB_WORKSPACE O=out M=$PWD AUTOCONF_H=$GITHUB_WORKSPACE/out/include/generated/autoconf.h TOP=$TOP
 
+        cd $BASEPATH/connectivity/wlan/adaptor
+        make -C $GITHUB_WORKSPACE O=out M=$PWD AUTOCONF_H=$GITHUB_WORKSPACE/out/include/generated/autoconf.h TOP=$TOP
+
         cd $BASEPATH/
 
         mkdir /tmp/modules
