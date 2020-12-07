@@ -40,6 +40,13 @@ jobs:
         cd $BASEPATH/fpsgo_cus/4.9
         make -C $GITHUB_WORKSPACE O=out M=$PWD
 
+        cd $BASEPATH/connectivity/wlan/core/gen4m
+        export CONFIG_MTK_COMBO_WIFI_HIF=axi
+        export MTK_COMBO_CHIP=CONNAC
+        export WLAN_CHIP_ID=6765
+        export MTK_ANDROID_WMT=y
+        make -C $GITHUB_WORKSPACE O=out M=$PWD AUTOCONF_H=$GITHUB_WORKSPACE/out/include/generated/autoconf.h TOP=$TOP
+
         cd $BASEPATH/
 
         mkdir /tmp/modules
