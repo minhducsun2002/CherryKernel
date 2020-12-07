@@ -40,9 +40,10 @@ jobs:
         cd $BASEPATH/fpsgo_cus/4.9
         make -C $GITHUB_WORKSPACE O=out M=$PWD
 
-        cd $BASEPATH/connectivity
+        cd $BASEPATH/
+
         mkdir /tmp/modules
-        cp **/*.ko /tmp/modules
+        find . -name \*.ko -exec cp {} /tmp/modules \;
     - uses: actions/upload-artifact@v1
       with:
         name: CherryKernel-cereus-drv-${{ github.sha }}
